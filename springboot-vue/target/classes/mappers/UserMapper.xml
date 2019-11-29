@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lkq.dao.UserMapper">
+    <select id="selectObject" resultType="com.lkq.pojo.User">
+        SELECT a.*,b.`name` AS bname, c.`name` AS province ,c1.`name`AS city ,c2.`name` AS county
+        FROM t_user a
+        LEFT JOIN t_org b ON a.`id`=b.`id`
+        LEFT JOIN t_address c ON a.`provincecode`=c.`id`
+        LEFT JOIN t_address c1 ON a.`citycode`=c1.`id`
+        LEFT JOIN t_address c2 ON a.countycode = c2.`id`
+       <where>
+           <if test="user.name!=null and user.name!='' ">
+               and a.name like '%${user.name}%'
+               or a.loginid like '%${user.name}%'
+           </if>
+           <if test="user.birstart!=null and user.birstart!='' ">
+               and birthday &gt; #{user.birstart}
+           </if>
+           <if test="user.birend!=null and user.birend!='' ">
+                AND birthday &lt; #{user.birend}
+           </if>
+       </where>
+    </select>
+
+    <insert id="insert">
+        insert into t_user (name,loginid,birthday,email,telno,provincecode,citycode,countycode) values (#{name},#{loginid},#{birthday},#{email},#{telno},#{provincecode},#{citycode},#{countycode})
+    </insert>
+    <update id="update">
+        update t_user set (name=#{name},loginid=#{loginid},birthday=#{birthday},email=#{email},telno=#{telno},provincecode=#{provincecode},citycode=#{citycode},countycode=#{countycode}) where id=#{id}
+    </update>
+
+    <select id="selectById" resultType="com.lkq.pojo.User">
+        SELECT a.*,b.`name` AS bname, c.`name` AS province ,c1.`name`AS city ,c2.`name` AS county
+        FROM t_user a
+        LEFT JOIN t_org b ON a.`id`=b.`id`
+        LEFT JOIN t_address c ON a.`provincecode`=c.`id`
+        LEFT JOIN t_address c1 ON a.`citycode`=c1.`id`
+        LEFT JOIN t_address c2 ON a.countycode = c2.`id`
+        where a.id = #{id}
+    </select>
+
+
+</mapper>
